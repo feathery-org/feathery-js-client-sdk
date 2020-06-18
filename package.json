@@ -1,10 +1,24 @@
 {
   "name": "feathery-js-client-sdk",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
   "author": "Peter Dun <pdun2008@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/bo-dun-1/feathery-js-client-sdk",
   "bugs": "https://github.com/bo-dun-1/feathery-js-client-sdk/issues",
-  "repository": "https://github.com/bo-dun-1/feathery-js-client-sdk.git"
+  "repository": "https://github.com/bo-dun-1/feathery-js-client-sdk.git",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "jquery": "^3.5.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "@jest/globals": "^26.0.1",
+    "babel-jest": "^26.0.1",
+    "jest": "^26.0.1",
+    "sinon": "^9.0.2"
+  }
 }
