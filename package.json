@@ -1,6 +1,6 @@
 {
   "name": "feathery-js-client-sdk",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "src/index.js",
   "author": "Peter Dun <pdun2008@gmail.com>",
   "license": "MIT",
