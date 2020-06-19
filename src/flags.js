@@ -3,7 +3,7 @@ import $ from "jquery";
 export default function fetchFlags(organizationId, userKey, flags) {
 
     const url = (
-        "https://cdn.feathery.tech/" +
+        "https://cdn.feathery.tech/external/" +
         encodeURIComponent(organizationId) + "/" +
         encodeURIComponent(userKey) + "/"
     );
