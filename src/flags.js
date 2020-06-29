@@ -1,6 +1,6 @@
 import $ from "jquery";
 
-export default function fetchFlags(organizationId, userKey, flags) {
+export default function fetchFlags(sdkKey, userKey, flags) {
 
     const url = (
         "https://cdn.feathery.tech/external/" +
@@ -9,7 +9,7 @@ export default function fetchFlags(organizationId, userKey, flags) {
     const urlSettings = {
         url,
         cache: false,
-        headers: {Authorization: "Token " + organizationId},
+        headers: {Authorization: "Token " + sdkKey},
     }
     return $.get(urlSettings, function( data ) {
         data.forEach(function( info ) {

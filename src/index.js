@@ -1,8 +1,8 @@
 import fetchFlags from "./flags";
 
-export function initialize(organization_id, user_key) {
+export function initialize(sdkKey, userKey) {
     let flags = {};
-    const fetchPromise = fetchFlags(organization_id, user_key, flags);
+    const fetchPromise = fetchFlags(sdkKey, userKey, flags);
 
     function variation(key, defaultValue) {
         if (key in flags) {
