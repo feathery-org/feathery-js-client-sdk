@@ -8,11 +8,14 @@ export default class FeatheryClient {
 
 		this._sdkKey = sdkKey;
 		this._userKey = userKey;
-
+	
 		this.state = {
 			loaded: false,
 			flags: null,
 		};
+
+		this._fetchPromise = null;
+		this.fetch();
 	}
 
 	static validateKeys(sdkKey, userKey) {
@@ -24,9 +27,6 @@ export default class FeatheryClient {
 		}
 	}
 
-	get flags() {
-		return this.state.flags;
-	}
 
 	get loaded() {
 		return this.state.loaded;
@@ -40,30 +40,33 @@ export default class FeatheryClient {
 		return this._userKey;
 	}
 
-	set flags(flags) {
-		if (flags === null) {
-			this.state.flags = null;
-			this.state.loaded = false;
-		} else {
-			this.state.flags = flags;
-			this.state.loaded = true;
-		}
+	get fetchPromise(){
+		return this._fetchPromise !== null ? this._fetchPromise : Promise.resolve(this.state.flags);
 	}
 
 	variation(key, def) {
-		if (!this.state.loaded || !(key in this.flags)) {
+		if (!this.state.loaded || !(key in this.state.flags)) {
 			return def;
 		}
-		return this.flags[key];
+		return this.state.flags[key];
 	}
 
 	setFlags(json) {
+		if(json === null){
+			this.state.flags = null;
+			this.state.loaded = false;
+			return
+		}
 		const flags = {};
 		json.forEach((flag) => (flags[flag.key] = flag.value));
-		this.flags = flags;
+		this.state.flags = flags;
+		this.state.loaded = true;
 	}
 
 	fetch() {
+		if(this._fetchPromise !== null){
+			return;
+		}
 		const { _userKey: userKey, _sdkKey: sdkKey } = this;
 		FeatheryClient.validateKeys(userKey, sdkKey);
 		const url = `https://cdn.feathery.tech/external/${encodeURIComponent(userKey)}/`;
@@ -71,8 +74,8 @@ export default class FeatheryClient {
 			cache: "no-store",
 			headers: { Authorization: "Token " + sdkKey },
 		};
-		this.flags = null;
-		return fetch(url, options)
+		this.setFlags(null);
+		this._fetchPromise = fetch(url, options)
 			.then((response) => {
 				const { status } = response;
 				switch (status) {
@@ -88,9 +91,11 @@ export default class FeatheryClient {
 			})
 			.then((json) => {
 				this.setFlags(json);
-				return this.flags;
+				this._fetchPromise = null;
+				return this.state.flags;
 			})
 			.catch((error) => {
+				this._fetchPromise = null;
 				throw error instanceof TypeError ? new errors.FetchError("Could not connect to the server") : error;
 			});
 	}
