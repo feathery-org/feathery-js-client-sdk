@@ -8,7 +8,7 @@ export default class FeatheryClient {
 
 		this._sdkKey = sdkKey;
 		this._userKey = userKey;
-	
+
 		this.state = {
 			loaded: false,
 			flags: null,
@@ -27,7 +27,6 @@ export default class FeatheryClient {
 		}
 	}
 
-
 	get loaded() {
 		return this.state.loaded;
 	}
@@ -40,7 +39,7 @@ export default class FeatheryClient {
 		return this._userKey;
 	}
 
-	get fetchPromise(){
+	get fetchPromise() {
 		return this._fetchPromise !== null ? this._fetchPromise : Promise.resolve(this.state.flags);
 	}
 
@@ -52,10 +51,10 @@ export default class FeatheryClient {
 	}
 
 	setFlags(json) {
-		if(json === null){
+		if (json === null) {
 			this.state.flags = null;
 			this.state.loaded = false;
-			return
+			return;
 		}
 		const flags = {};
 		json.forEach((flag) => (flags[flag.key] = flag.value));
@@ -64,7 +63,7 @@ export default class FeatheryClient {
 	}
 
 	fetch() {
-		if(this._fetchPromise !== null){
+		if (this._fetchPromise !== null) {
 			return;
 		}
 		const { _userKey: userKey, _sdkKey: sdkKey } = this;
