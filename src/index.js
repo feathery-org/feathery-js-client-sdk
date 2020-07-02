@@ -11,10 +11,10 @@ export default class FeatheryClient {
 
 		this.state = {
 			loaded: false,
-			flags: null,
+			settings: null,
 		};
 
-		this._fetchPromise = null;
+		this._resolve = null;
 		this.fetch();
 	}
 
@@ -39,31 +39,31 @@ export default class FeatheryClient {
 		return this._userKey;
 	}
 
-	get fetchPromise() {
-		return this._fetchPromise !== null ? this._fetchPromise : Promise.resolve(this.state.flags);
+	get resolve() {
+		return this._resolve !== null ? this._resolve : Promise.resolve(this.state.settings);
 	}
 
 	variation(key, def) {
-		if (!this.state.loaded || !(key in this.state.flags)) {
+		if (!this.state.loaded || !(key in this.state.settings)) {
 			return def;
 		}
-		return this.state.flags[key];
+		return this.state.settings[key];
 	}
 
-	setFlags(json) {
+	setSettings(json) {
 		if (json === null) {
-			this.state.flags = null;
+			this.state.settings = null;
 			this.state.loaded = false;
 			return;
 		}
-		const flags = {};
-		json.forEach((flag) => (flags[flag.key] = flag.value));
-		this.state.flags = flags;
+		const settings = {};
+		json.forEach((setting) => (settings[setting.key] = setting.value));
+		this.state.settings = settings;
 		this.state.loaded = true;
 	}
 
 	fetch() {
-		if (this._fetchPromise !== null) {
+		if (this._resolve !== null) {
 			return;
 		}
 		const { _userKey: userKey, _sdkKey: sdkKey } = this;
@@ -73,28 +73,28 @@ export default class FeatheryClient {
 			cache: "no-store",
 			headers: { Authorization: "Token " + sdkKey },
 		};
-		this.setFlags(null);
-		this._fetchPromise = fetch(url, options)
+		this.setSettings(null);
+		this._resolve = fetch(url, options)
 			.then((response) => {
 				const { status } = response;
 				switch (status) {
 					case 200:
 						return response.json();
 					case 401:
-						return Promise.reject(new errors.SdkKeyError("Invaid SDK key"));
+						return Promise.reject(new errors.SdkKeyError("Invalid SDK key"));
 					case 404:
-						return Promise.reject(new errors.UserKeyError("Invaid User key"));
+						return Promise.reject(new errors.UserKeyError("Invalid User key"));
 					default:
 						return Promise.reject(new errors.FetchError("Unknown error"));
 				}
 			})
 			.then((json) => {
-				this.setFlags(json);
-				this._fetchPromise = null;
-				return this.state.flags;
+				this.setSettings(json);
+				this._resolve = null;
+				return this.state.settings;
 			})
 			.catch((error) => {
-				this._fetchPromise = null;
+				this._resolve = null;
 				throw error instanceof TypeError ? new errors.FetchError("Could not connect to the server") : error;
 			});
 	}

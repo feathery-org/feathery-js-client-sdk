@@ -1,27 +1,22 @@
-import {afterEach, beforeEach, describe, expect, it} from "@jest/globals";
-import sinon from "sinon";
+import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 
-import * as FeatheryClient from "../index";
+import FeatheryClient from "../index";
 
 describe("FeatheryClient", () => {
     const userKey = "user";
     const orgId = "orgId";
-    let server;
+
+    global.fetch = jest.fn(() => {
+        return         Promise.resolve({
+            status: 200,
+            json: () => [{"key": "test_key", "value": true, "datatype": "boolean"}],
+        })
+    }
+
+    );
 
     beforeEach(() => {
-        server = sinon.createFakeServer();
-        server.autoRespond = true;
-        server.autoRespondAfter = 100;
-        // default 200 response
-        server.respondWith([
-            200,
-            {"Content-Type": "application/json" },
-            "[{\"key\": \"test_key\", \"value\": true, \"datatype\": \"boolean\"}]",
-        ]);
-    });
-
-    afterEach(() => {
-        server.restore();
+        fetch.mockClear();
     });
 
     it("client exists", () => {
@@ -29,16 +24,20 @@ describe("FeatheryClient", () => {
     });
 
     it("query sync", () => {
-        const client = FeatheryClient.initialize(orgId, userKey);
+        const client = new FeatheryClient(orgId, userKey);
         const val = client.variation("test_key", false);
         expect(val).toEqual(false);
     });
 
-    it("query async", () => {
-        const client = FeatheryClient.initialize(orgId, userKey);
-        client.onReady(() => {
-            const val = client.variation("test_key", false);
-            expect(val).toEqual(true);
-        });
+    it("query async", async done => {
+        const client = new FeatheryClient(orgId, userKey);
+        await client.resolve
+            .then(() => {
+                const val = client.variation("test_key", false);
+                expect(val).toEqual(true);
+                done();
+            }).catch((e) => {
+                done.fail(e);
+            });
     });
 });
