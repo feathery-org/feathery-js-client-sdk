@@ -7,13 +7,11 @@ describe("FeatheryClient", () => {
     const orgId = "orgId";
 
     global.fetch = jest.fn(() => {
-        return         Promise.resolve({
+        return Promise.resolve({
             status: 200,
             json: () => [{"key": "test_key", "value": true, "datatype": "boolean"}],
-        })
-    }
-
-    );
+        });
+    });
 
     beforeEach(() => {
         fetch.mockClear();
