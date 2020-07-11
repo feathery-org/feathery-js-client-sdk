@@ -15,7 +15,7 @@ export default class FeatheryClient {
 		};
 
 		this._resolve = null;
-		this.fetch();
+		this._fetch();
 	}
 
 	static validateKeys(sdkKey, userKey) {
@@ -62,7 +62,7 @@ export default class FeatheryClient {
 		this.state.loaded = true;
 	}
 
-	fetch() {
+	_fetch() {
 		if (this._resolve !== null) {
 			return;
 		}
