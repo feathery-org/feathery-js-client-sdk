@@ -4,9 +4,9 @@
   "main": "src/index.js",
   "author": "Peter Dun <pdun2008@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/bo-dun-1/feathery-js-client-sdk",
-  "bugs": "https://github.com/bo-dun-1/feathery-js-client-sdk/issues",
-  "repository": "https://github.com/bo-dun-1/feathery-js-client-sdk.git",
+  "homepage": "https://github.com/feathery-org/feathery-js-client-sdk",
+  "bugs": "https://github.com/feathery-org/feathery-js-client-sdk/issues",
+  "repository": "https://github.com/feathery-org/feathery-js-client-sdk.git",
   "scripts": {
     "test": "jest"
   },
