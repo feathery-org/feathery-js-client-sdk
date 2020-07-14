@@ -68,7 +68,7 @@ export default class FeatheryClient {
 		}
 		const { _userKey: userKey, _sdkKey: sdkKey } = this;
 		FeatheryClient.validateKeys(userKey, sdkKey);
-		const url = `https://cdn.feathery.tech/external/fuser/${encodeURIComponent(userKey)}/`;
+		const url = `https://cdn.feathery.tech/external/fuser/?fuser_key=${encodeURIComponent(userKey)}`;
 		const options = {
 			cache: "no-store",
 			headers: { Authorization: "Token " + sdkKey },
