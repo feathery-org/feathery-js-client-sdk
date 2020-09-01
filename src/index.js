@@ -15,6 +15,7 @@ export default class FeatheryClient {
 		};
 
 		this._resolve = null;
+
 		this._fetch();
 	}
 
@@ -95,6 +96,35 @@ export default class FeatheryClient {
 			})
 			.catch((error) => {
 				this._resolve = null;
+				throw error instanceof TypeError ? new errors.FetchError("Could not connect to the server") : error;
+			});
+	}
+
+	async fetchPanel() {
+		const { _userKey: userKey, _sdkKey: sdkKey } = this;
+		FeatheryClient.validateKeys(userKey, sdkKey);
+		const url = `https://api.feathery.tech/api/panel/detail/?fuser_key=${encodeURIComponent(userKey)}`;
+		const options = {
+			cache: "no-store",
+			headers: { Authorization: "Token " + sdkKey },
+		}
+		return fetch(url, options)
+			.then((response) => {
+				const { status } = response;
+				switch (status) {
+					case 200:
+						return response.json();
+					case 401:
+						return Promise.reject(new errors.SdkKeyError("Invalid SDK key"));
+					case 404:
+						return Promise.reject(new errors.UserKeyError("Invalid User key"));
+					default:
+						return Promise.reject(new errors.FetchError("Unknown error"));
+				}
+			})
+			.catch((error) => {
+				this._resolve = null;
+				console.log(error);
 				throw error instanceof TypeError ? new errors.FetchError("Could not connect to the server") : error;
 			});
 	}
