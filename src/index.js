@@ -103,7 +103,7 @@ export default class FeatheryClient {
 	async fetchPanel() {
 		const { _userKey: userKey, _sdkKey: sdkKey } = this;
 		FeatheryClient.validateKeys(userKey, sdkKey);
-		const url = `https://api.feathery.tech/api/panel/detail/?fuser_key=${encodeURIComponent(userKey)}`;
+		const url = `https://api.feathery.tech/api/panel/step/0/?fuser_key=${encodeURIComponent(userKey)}`;
 		const options = {
 			cache: "no-store",
 			headers: { Authorization: "Token " + sdkKey },
