@@ -100,7 +100,7 @@ export default class FeatheryClient {
 			});
 	}
 
-	async fetchPanel() {
+	async fetchFirstStep() {
 		const { _userKey: userKey, _sdkKey: sdkKey } = this;
 		FeatheryClient.validateKeys(userKey, sdkKey);
 		const url = `https://api.feathery.tech/api/panel/step/0/?fuser_key=${encodeURIComponent(userKey)}`;
@@ -124,7 +124,43 @@ export default class FeatheryClient {
 			})
 			.catch((error) => {
 				this._resolve = null;
-				console.log(error);
+				throw error instanceof TypeError ? new errors.FetchError("Could not connect to the server") : error;
+			});
+	}
+
+	async submitStep(stepNum, panelId, servars) {
+		// servars = [{key: <servarKey>, <type>: <value>}]
+		const { _userKey: userKey, _sdkKey: sdkKey } = this;
+		FeatheryClient.validateKeys(userKey, sdkKey);
+		const url = `https://api.feathery.tech/api/panel/step/submit/`;
+		const data = {
+			fuser_key: userKey,
+			panel_id: panelId,
+			step: stepNum,
+			servars: servars,
+		};
+		const options = {
+			cache: "no-store",
+			headers: { Authorization: "Token " + sdkKey, "Content-Type": "application/json" },
+			method: "POST",
+			body: JSON.stringify(data),
+		}
+		return fetch(url, options)
+			.then((response) => {
+				const { status } = response;
+				switch (status) {
+					case 200:
+						return response.json();
+					case 401:
+						return Promise.reject(new errors.SdkKeyError("Invalid SDK key"));
+					case 404:
+						return Promise.reject(new errors.UserKeyError("Invalid User key"));
+					default:
+						return Promise.reject(new errors.FetchError("Unknown error"));
+				}
+			})
+			.catch((error) => {
+				this._resolve = null;
 				throw error instanceof TypeError ? new errors.FetchError("Could not connect to the server") : error;
 			});
 	}
