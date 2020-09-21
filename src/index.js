@@ -128,14 +128,13 @@ export default class FeatheryClient {
 			});
 	}
 
-	async submitStep(stepNum, panelId, servars) {
+	async submitStep(stepNum, servars) {
 		// servars = [{key: <servarKey>, <type>: <value>}]
 		const { _userKey: userKey, _sdkKey: sdkKey } = this;
 		FeatheryClient.validateKeys(userKey, sdkKey);
 		const url = `https://api.feathery.tech/api/panel/step/submit/`;
 		const data = {
 			fuser_key: userKey,
-			panel_id: panelId,
 			step: stepNum,
 			servars: servars,
 		};
