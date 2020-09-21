@@ -150,6 +150,8 @@ export default class FeatheryClient {
 				switch (status) {
 					case 200:
 						return response.json();
+					case 201:
+						return response.json();
 					case 401:
 						return Promise.reject(new errors.SdkKeyError("Invalid SDK key"));
 					case 404:
