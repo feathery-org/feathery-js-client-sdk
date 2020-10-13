@@ -145,7 +145,7 @@ export default class FeatheryClient {
     const url = `https://api.feathery.tech/api/panel/step/submit/`;
     const data = {
       fuser_key: userKey,
-      step: stepNum,
+      step_number: stepNum,
       servars: servars,
     };
     const options = {
